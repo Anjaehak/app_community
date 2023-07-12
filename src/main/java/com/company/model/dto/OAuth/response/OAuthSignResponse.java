@@ -1,4 +1,4 @@
-package com.company.exception;
+package com.company.model.dto.OAuth.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CertifyException extends Exception {
+public class OAuthSignResponse {
 
-	String message;
+	int status;
+	String url;
 }

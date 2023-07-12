@@ -3,14 +3,15 @@ package com.company.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.company.exception.CertifyCodeException;
+import com.company.exception.CertifyFailException;
+import com.company.exception.ErrorPasswordException;
 import com.company.exception.ExistUserException;
-import com.company.exception.UnequalPassException;
+import com.company.exception.NotExistUserException;
 import com.company.model.dto.SocialAccount;
-import com.company.model.dto.request.CertifyCodeRequest;
-import com.company.model.dto.request.CertifyEmailRequestDTO;
-import com.company.model.dto.request.CreateUserRequestDTO;
-import com.company.model.dto.request.ValidateUserRequest;
+import com.company.model.dto.user.request.CertifyEmailRequest;
+import com.company.model.dto.user.request.DeleteUserRequest;
+import com.company.model.dto.user.request.JoinUserRequest;
+import com.company.model.dto.user.request.ValidateUserRequest;
 import com.company.model.entity.Certify;
 import com.company.model.entity.User;
 import com.company.repository.CertifyRepository;
@@ -28,26 +29,26 @@ public class UserService {
 	private final CertifyRepository certifyRepository;
 
 	@Transactional
-	public void createUser(CreateUserRequestDTO dto) throws ExistUserException, CertifyCodeException {
+	public void createUser(JoinUserRequest dto) throws ExistUserException, CertifyFailException {
 
 		if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
 			throw new ExistUserException();
 		}
 
 		Certify data = certifyRepository.findByEmail(dto.getEmail())
-				.orElseThrow(() -> new CertifyCodeException("인증 기록이 존재하지 않습니다"));
+				.orElseThrow(() -> new CertifyFailException("인증 기록이 존재하지 않습니다"));
 
 		if (data.getStatus().equals("N")) {
-			throw new CertifyCodeException("인증에 실패한 유저입니다 재인증을 받아주세요");
+			throw new CertifyFailException("인증에 실패한 유저입니다 재인증을 받아주세요");
 		}
-		User user = User.builder().email(dto.getEmail()).password(dto.getPass()).nick(dto.getNick())
-				.userImage(dto.getUserImage()).authority("4").build();
+		User user = User.builder().email(dto.getEmail()).password(dto.getPassword()).nick(dto.getNick()).authority("4")
+				.build();
 
 		userRepository.save(user);
 	}
 
 	@Transactional
-	public void availableEmail(@Valid CertifyEmailRequestDTO dto) throws ExistUserException {
+	public void availableEmail(@Valid CertifyEmailRequest dto) throws ExistUserException {
 
 		if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
 			throw new ExistUserException();
@@ -55,27 +56,11 @@ public class UserService {
 
 	}
 
-	@Transactional
-	public void certifySpecificCode(@Valid CertifyCodeRequest req) throws CertifyCodeException {
-
-		Certify data = certifyRepository.findByEmail(req.getEmail())
-				.orElseThrow(() -> new CertifyCodeException("인증코드 발급받은 적이 없습니다."));
-
-		if (!data.getCode().equals(req.getCode())) {
-			throw new CertifyCodeException("인증코드가 일치하지 않습니다.");
-		}
-
-		data.setStatus("Y");
-
-		certifyRepository.save(data);
-
-	}
-
-	public void validateUser(@Valid ValidateUserRequest req) throws ExistUserException, UnequalPassException {
-		User user = userRepository.findByEmail(req.getEmail()).orElseThrow(() -> new ExistUserException());
+	public void validateUser(@Valid ValidateUserRequest req) throws ErrorPasswordException, NotExistUserException {
+		User user = userRepository.findByEmail(req.getEmail()).orElseThrow(() -> new NotExistUserException());
 
 		if (!user.getPassword().equals(req.getPass())) {
-			throw new UnequalPassException();
+			throw new ErrorPasswordException("비밀번호가 올바르지않습니다");
 		}
 
 	}
@@ -83,6 +68,18 @@ public class UserService {
 	@Transactional
 	public void createSocialUser(SocialAccount account, String accessToken) {
 		userRepository.findByEmail(account.getEmail());
+
+	}
+
+	@Transactional
+	public void deleteSpecificUser(String principal, DeleteUserRequest req)
+			throws NotExistUserException, ErrorPasswordException {
+		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
+		if (!user.getPassword().equals(req.getPassword())) {
+			throw new ErrorPasswordException();
+		}
+		userRepository.deleteByEmail(principal);
+		certifyRepository.deleteByEmail(principal);
 
 	}
 }

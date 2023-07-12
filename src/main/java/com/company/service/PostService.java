@@ -11,9 +11,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
-import com.company.model.dto.request.CreatePostRequest;
-import com.company.model.dto.request.PostLikeRequest;
-import com.company.model.dto.request.UpdatePostRequest;
+import com.company.model.dto.post.request.CreatePostRequest;
+import com.company.model.dto.post.request.PostLikeRequest;
+import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.entity.Image;
 import com.company.model.entity.Recommend;
 import com.company.model.entity.Post;
@@ -99,16 +99,10 @@ public class PostService {
 
 		User user = userRepository.findByEmail(email).orElseThrow(() -> new NotExistUserException());
 		Post post = postRepository.findById(postNumber).orElseThrow(() -> new NotExistPostException());
-		
-		Recommend like =Recommend.builder()
-				.userId(user)
-				.postId(post)
-				.build();
-		likeRepository.save(like);
-		
+
+		Recommend recommend = Recommend.builder().usersId(user).postsId(post).build();
+		likeRepository.save(recommend);
 
 	}
-
-
 
 }
