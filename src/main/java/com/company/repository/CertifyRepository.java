@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.company.model.entity.Certify;
 
-import java.util.List;
+public interface CertifyRepository extends JpaRepository<Certify, Integer> {
 
+	public Optional<Certify> findByEmail(String email);
 
-public interface CertifyRepository extends JpaRepository<Certify, Integer>{
+	void deleteByEmail(String email);
 
-	Optional<Certify> findByEmail(String email);
 }
