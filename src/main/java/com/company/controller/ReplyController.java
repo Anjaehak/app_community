@@ -10,7 +10,7 @@ import com.company.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/reply")
+@RequestMapping("/app_comunity/v1/reply")
 @RequiredArgsConstructor
 public class ReplyController {
 
@@ -18,9 +18,7 @@ public class ReplyController {
 
 	// 특정게시글의 댓글 전체불러오기
 	public ResponseEntity<?> readAllReplyHandle() {
-		
 
-		
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 }

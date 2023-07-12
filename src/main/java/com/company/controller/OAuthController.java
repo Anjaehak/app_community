@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.model.dto.KakaoAccessTokenWrapper;
 import com.company.model.dto.SocialAccount;
-import com.company.model.dto.request.ValidateKakaoRequest;
-import com.company.model.dto.response.OAuthSignResponse;
-import com.company.model.dto.response.ValidateUserResponse;
+import com.company.model.dto.OAuth.request.ValidateKakaoRequest;
+import com.company.model.dto.OAuth.response.OAuthSignResponse;
+import com.company.model.dto.user.response.ValidateUserResponse;
 import com.company.service.JWTService;
 import com.company.service.SocialLoginService;
 import com.company.service.UserService;
@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/app_cafe/v1/oauth")
+@RequestMapping("/app_comunity/v1/oauth")
 @RequiredArgsConstructor
 @CrossOrigin
 public class OAuthController {

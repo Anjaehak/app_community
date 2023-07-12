@@ -13,24 +13,24 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 public class JWTService {
 
 	@Value("${jwt.secret.key}")
-	String secretKey;
+	String key;
 	
 	public String createToken(String email) {
-		Algorithm algorithm = Algorithm.HMAC256(secretKey);
+		Algorithm algorithm = Algorithm.HMAC256(key);
 		
 		return JWT.create()
-			.withIssuer("app_cafe")
+			.withIssuer("app_comunity")
 			.withIssuedAt(new Date(System.currentTimeMillis()))
-			.withExpiresAt(new Date(System.currentTimeMillis() + 1000*60*30))
+			.withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
 			.withClaim("email", email)
 			.sign(algorithm);
 	}
 	
 
 	public String certifyToken(String token) {
-		Algorithm algorithm = Algorithm.HMAC256(secretKey);
+		Algorithm algorithm = Algorithm.HMAC256(key);
 		var verifier =JWT.require(algorithm).build();
-		DecodedJWT decodedJWT =  verifier.verify(token);
+		DecodedJWT decodedJWT = verifier.verify(token);
 
 		return decodedJWT.getClaim("email").asString();
 	}
