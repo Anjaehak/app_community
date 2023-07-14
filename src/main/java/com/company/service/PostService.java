@@ -3,7 +3,10 @@ package com.company.service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,16 +14,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
+import com.company.model.dto.PostWrapper;
+import com.company.model.dto.ReReplyWrapper;
+import com.company.model.dto.ReplyWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
-import com.company.model.dto.post.request.PostLikeRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
+import com.company.model.dto.post.response.AllPostsResponse;
 import com.company.model.entity.Image;
-import com.company.model.entity.Recommend;
 import com.company.model.entity.Post;
+import com.company.model.entity.Recommend;
+import com.company.model.entity.Reply;
 import com.company.model.entity.User;
 import com.company.repository.ImageRepository;
-import com.company.repository.RecommendRepository;
 import com.company.repository.PostRepository;
+import com.company.repository.RecommendRepository;
+import com.company.repository.ReplyRepository;
 import com.company.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -39,8 +47,16 @@ public class PostService {
 	private final ImageRepository imageRepository;
 	private final RecommendRepository likeRepository;
 
-	public List<Post> allPosts() {
-		return postRepository.findAll();
+	private final ReplyRepository replyRepository;
+
+	public AllPostsResponse allPosts() {
+		List<Post> postLi = postRepository.findAll();
+
+		List<PostWrapper> li = postLi.stream().map(e -> new PostWrapper(e)).toList();
+
+		Long cnt = postRepository.count();
+
+		return new AllPostsResponse(cnt, li);
 
 	}
 
@@ -102,6 +118,19 @@ public class PostService {
 
 		Recommend recommend = Recommend.builder().usersId(user).postsId(post).build();
 		likeRepository.save(recommend);
+
+	}
+
+	public void test(String id) throws NumberFormatException, NotExistPostException {
+		Post post = postRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new NotExistPostException());
+
+		List<Reply> replyLi = replyRepository.findByPostsId(post);
+
+		Map<Integer, ReplyWrapper> b = new LinkedHashMap<>();
+
+		List<ReReplyWrapper> c = new LinkedList<>();
+
+		ReReplyWrapper asc = new ReReplyWrapper();
 
 	}
 

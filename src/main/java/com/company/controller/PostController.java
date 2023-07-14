@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
+import com.company.model.dto.PostWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.PostLikeRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
+import com.company.model.dto.post.response.AllPostsResponse;
 import com.company.model.entity.Post;
 import com.company.service.PostService;
 
@@ -30,12 +32,11 @@ public class PostController {
 
 	// 전체글 불러오기
 	@GetMapping("/list")
-	public ResponseEntity<?> readAllPostHandle() {
+	public ResponseEntity<AllPostsResponse> readAllPostHandle() {
 
-		List<Post> Items = postService.allPosts();
+		AllPostsResponse datas = postService.allPosts();
 
-		return new ResponseEntity<>(HttpStatus.OK);
-
+		return new ResponseEntity<AllPostsResponse>(datas, HttpStatus.OK);
 	}
 
 	// 신규글 등록
