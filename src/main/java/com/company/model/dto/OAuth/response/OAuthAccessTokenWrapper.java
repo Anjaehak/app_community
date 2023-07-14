@@ -1,11 +1,11 @@
-package com.company.model.dto;
+package com.company.model.dto.OAuth.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Data;
 
 @Data
-public class KakaoAccessTokenWrapper {
+public class OAuthAccessTokenWrapper {
 
 	@JsonProperty("token_type")
 	String tokenType;

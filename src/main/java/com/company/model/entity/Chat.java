@@ -26,7 +26,7 @@ public class Chat {
 	private User usersId;
 
 	private String chatMessage;
-	
+
 	private LocalDateTime chatDate;
 
 	@PrePersist

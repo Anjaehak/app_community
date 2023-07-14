@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.company.model.dto.KakaoAccessTokenWrapper;
 import com.company.model.dto.SocialAccount;
 import com.company.model.dto.OAuth.request.ValidateKakaoRequest;
+import com.company.model.dto.OAuth.request.ValidateNaverRequest;
+import com.company.model.dto.OAuth.response.OAuthAccessTokenWrapper;
 import com.company.model.dto.OAuth.response.OAuthSignResponse;
 import com.company.model.dto.user.response.ValidateUserResponse;
 import com.company.service.JWTService;
@@ -31,8 +32,14 @@ public class OAuthController {
 	@Value("${kakao.restapi.key}")
 	String kakaoKey;
 
-	@Value("${kakao.redirect.url}")
-	String kakaoUrl;
+	@Value("${kakao.redirect.uri}")
+	String kakaoUri;
+
+	@Value("${naver.restapi.id}")
+	String naverId;
+
+	@Value("${naver.restapi.uri}")
+	String naverUri;
 
 	private final SocialLoginService socialLoginService;
 	private final JWTService jwtService;
@@ -43,7 +50,7 @@ public class OAuthController {
 
 		OAuthSignResponse response = new OAuthSignResponse(200,
 				"https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=" + kakaoKey + "&redirect_uri="
-						+ kakaoUrl);
+						+ kakaoUri);
 
 		return new ResponseEntity<OAuthSignResponse>(response, HttpStatus.OK);
 	}
@@ -52,8 +59,33 @@ public class OAuthController {
 	public ResponseEntity<ValidateUserResponse> kakaoLoginTokenHandle(ValidateKakaoRequest req)
 			throws JsonMappingException, JsonProcessingException {
 
-		KakaoAccessTokenWrapper wrapper = socialLoginService.getKakaoAccessToken(req.getCode());
+		OAuthAccessTokenWrapper wrapper = socialLoginService.getKakaoAccessToken(req.getCode());
 		SocialAccount userInfo = socialLoginService.getKakaoUserInfo(wrapper.getAccessToken());
+
+		userService.createSocialUser(userInfo, wrapper.getAccessToken());
+
+		String token = jwtService.createToken(userInfo.getEmail());
+
+		ValidateUserResponse response = new ValidateUserResponse(200, token, userInfo.getEmail());
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
+	}
+
+	@GetMapping("/naver")
+	public ResponseEntity<OAuthSignResponse> naverLoginHandle() {
+
+		OAuthSignResponse response = new OAuthSignResponse(200,
+				"https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=" + naverId
+						+ "&state=appComunity&redirect_uri=" + naverUri);
+
+		return new ResponseEntity<OAuthSignResponse>(response, HttpStatus.OK);
+	}
+
+	@GetMapping("/naver/token")
+	public ResponseEntity<?> test(ValidateNaverRequest req) throws JsonMappingException, JsonProcessingException {
+
+		OAuthAccessTokenWrapper wrapper = socialLoginService.getNaverAccessToken(req);
+		SocialAccount userInfo = socialLoginService.getNaverUserInfo(wrapper.getAccessToken());
 
 		userService.createSocialUser(userInfo, wrapper.getAccessToken());
 
