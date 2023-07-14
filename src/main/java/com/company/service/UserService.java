@@ -1,5 +1,7 @@
 package com.company.service;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,7 +69,19 @@ public class UserService {
 
 	@Transactional
 	public void createSocialUser(SocialAccount account, String accessToken) {
-		userRepository.findByEmail(account.getEmail());
+		Optional<User> data = userRepository.findByEmail(account.getEmail());
+		if (data.isPresent()) {
+			User saved = data.get();
+			saved.setSocialToken(accessToken);
+			userRepository.save(saved);
+		} else {
+			User user = new User();
+			user.setEmail(account.getEmail());
+			user.setNick(account.getNick());
+			user.setUserImage(account.getProfileImage());
+			user.setSocialToken(accessToken);
+			userRepository.save(user);
+		}
 
 	}
 
@@ -80,6 +94,12 @@ public class UserService {
 		}
 		userRepository.deleteByEmail(principal);
 		certifyRepository.deleteByEmail(principal);
+
+	}
+
+	public void deleteSpecificSocialUser(String email) throws NotExistUserException {
+		User user = userRepository.findByEmail(email).orElseThrow(() -> new NotExistUserException());
+		userRepository.delete(user);
 
 	}
 }

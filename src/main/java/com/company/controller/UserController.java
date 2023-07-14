@@ -15,6 +15,7 @@ import com.company.exception.CertifyFailException;
 import com.company.exception.ErrorPasswordException;
 import com.company.exception.ExistUserException;
 import com.company.exception.NotExistUserException;
+import com.company.model.dto.SocialAccount;
 import com.company.model.dto.user.request.CertifyCodeRequest;
 import com.company.model.dto.user.request.CertifyEmailRequest;
 import com.company.model.dto.user.request.DeleteUserRequest;
@@ -24,6 +25,7 @@ import com.company.model.dto.user.response.CertifyResponse;
 import com.company.model.dto.user.response.ValidateUserResponse;
 import com.company.service.CertifyService;
 import com.company.service.JWTService;
+import com.company.service.SocialLoginService;
 import com.company.service.UserService;
 
 import jakarta.validation.Valid;
@@ -40,6 +42,8 @@ public class UserController {
 	private final CertifyService mailService;
 
 	private final JWTService jwtService;
+
+	private final SocialLoginService socialLoginService;
 
 	// 유저 생성 컨트롤러
 	@PostMapping("/join")
@@ -84,17 +88,23 @@ public class UserController {
 
 		String token = jwtService.createToken(req.getEmail());
 
-		var response = new ValidateUserResponse(200, token, "토큰 발급 완료");
+		ValidateUserResponse response = new ValidateUserResponse(200, token, "토큰 발급 완료");
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete-user/{password}")
+	@DeleteMapping
 	public ResponseEntity<Void> deleteUserHandle(String principal, DeleteUserRequest req)
 			throws NotExistUserException, ErrorPasswordException {
+		if (principal.endsWith("social")) {
 
-		userService.deleteSpecificUser(principal, req);
+			socialLoginService.sendKakaoUnlink(principal);
 
+			userService.deleteSpecificSocialUser(principal);
+
+		} else {
+			userService.deleteSpecificUser(principal, req);
+		}
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
