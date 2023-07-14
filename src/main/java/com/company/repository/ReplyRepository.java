@@ -1,5 +1,7 @@
 package com.company.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.company.model.entity.Post;
@@ -9,5 +11,6 @@ import java.util.List;
 
 public interface ReplyRepository extends JpaRepository<Reply, Integer> {
 
-	List<Reply> findByPostsId(Post postsId);
+	List<Reply> findByPostsId(Post postId);
+
 }
