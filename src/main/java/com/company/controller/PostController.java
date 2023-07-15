@@ -16,6 +16,7 @@ import com.company.exception.NotExistUserException;
 import com.company.model.dto.PostWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.PostLikeRequest;
+import com.company.model.dto.post.request.ReadPostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
 import com.company.model.entity.Post;
@@ -67,6 +68,15 @@ public class PostController {
 		postService.recommendPost(principal, req.getPostId());
 
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@GetMapping("/specific-post")
+	public ResponseEntity<PostWrapper> specificReadHandle(ReadPostRequest req) throws NotExistPostException {
+
+		PostWrapper postResponse = postService.getSpecificPost(req.getId());
+
+		return new ResponseEntity<PostWrapper>(postResponse, HttpStatus.OK);
+
 	}
 
 }

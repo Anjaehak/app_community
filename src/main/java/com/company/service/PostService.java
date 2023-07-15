@@ -3,10 +3,8 @@ package com.company.service;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -45,7 +43,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final ImageRepository imageRepository;
-	private final RecommendRepository likeRepository;
+	private final RecommendRepository recommendRepository;
 
 	private final ReplyRepository replyRepository;
 
@@ -117,21 +115,45 @@ public class PostService {
 		Post post = postRepository.findById(postNumber).orElseThrow(() -> new NotExistPostException());
 
 		Recommend recommend = Recommend.builder().usersId(user).postsId(post).build();
-		likeRepository.save(recommend);
+		recommendRepository.save(recommend);
 
 	}
 
-	public void test(String id) throws NumberFormatException, NotExistPostException {
-		Post post = postRepository.findById(Integer.parseInt(id)).orElseThrow(() -> new NotExistPostException());
+	public PostWrapper getSpecificPost(Integer id) throws NumberFormatException, NotExistPostException {
 
-		List<Reply> replyLi = replyRepository.findByPostsId(post);
+		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
 
-		Map<Integer, ReplyWrapper> b = new LinkedHashMap<>();
+		if (replyRepository.findByPostsId(post).size() == 0) {
+			int recommendCnt = recommendRepository.findByPostsId(post).size();
 
-		List<ReReplyWrapper> c = new LinkedList<>();
+			return new PostWrapper(post, recommendCnt);
+		} else {
 
-		ReReplyWrapper asc = new ReReplyWrapper();
+			List<Reply> replyDatas = replyRepository.findByPostsId(post);
+			List<Reply> replyLi = replyDatas.stream().filter(t -> t.getParentId() == null).toList();
 
+			List<ReReplyWrapper> reReplyWrapperLi = new ArrayList<>();
+			List<ReplyWrapper> replyWrapperLi = new ArrayList<>();
+
+			for (Reply out : replyLi) {
+
+				for (Reply in : replyDatas) {
+					if (out.getId().equals(in.getParentId())) {
+						int recommendCnt = recommendRepository.findByRepliesId(in).size();
+
+						reReplyWrapperLi.add(new ReReplyWrapper(in, recommendCnt));
+					}
+				}
+				int recommendCnt = recommendRepository.findByRepliesId(out).size();
+				ReplyWrapper replyWrapper = new ReplyWrapper(out, reReplyWrapperLi, recommendCnt);
+
+				replyWrapperLi.add(replyWrapper);
+			}
+
+			int recommendCnt = recommendRepository.findByPostsId(post).size();
+
+			return new PostWrapper(post, replyWrapperLi, recommendCnt);
+		}
 	}
 
 }

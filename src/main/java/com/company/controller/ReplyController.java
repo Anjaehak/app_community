@@ -26,13 +26,12 @@ public class ReplyController {
 
 	// 특정게시글의 댓글 전체불러오기
 	@GetMapping("/list")
-	public ResponseEntity<?> readAllReplyHandle(ReplyReadRequest req)
-			throws NotExistPostException {
-		System.out.println(req.getPostId());
+	public ResponseEntity<?> readAllReplyHandle(ReplyReadRequest req) throws NotExistPostException {
+
 		Post post = postRepository.findById(req.getPostId()).orElseThrow(() -> new NotExistPostException());
 		var comments = replyService.specificPostReplyRead(req);
-		System.out.println(comments.toString());
-		return new ResponseEntity<>( HttpStatus.OK);
+
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	// 특정게시글의 댓글작성
