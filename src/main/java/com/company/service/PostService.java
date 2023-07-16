@@ -121,7 +121,6 @@ public class PostService {
 	}
 
 	public PostWrapper getSpecificPost(Integer id) throws NumberFormatException, NotExistPostException {
-
 		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
 
 		if (replyRepository.findByPostsId(post).size() == 0) {
@@ -156,20 +155,4 @@ public class PostService {
 			return new PostWrapper(post, replyWrapperLi, recommendCnt);
 		}
 	}
-
-	public PostResponse getSpecificPost(Integer postId) throws NotExistPostException {
-
-		Post post = postRepository.findById(postId).orElseThrow(() -> new NotExistPostException());
-		var postResponse = new PostResponse();
-		postResponse.setId(post.getId());
-		postResponse.setImages(post.getImages());
-		postResponse.setPostContent(post.getPostContent());
-		postResponse.setPostDate(post.getPostDate());
-		postResponse.setPostWriter(post.getPostWriter());
-		postResponse.setReplies(post.getReplies());
-		postResponse.setTitle(post.getTitle());
-
-		return postResponse;
-	}
-
 }
