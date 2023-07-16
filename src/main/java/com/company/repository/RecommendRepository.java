@@ -13,4 +13,6 @@ public interface RecommendRepository extends JpaRepository<Recommend, Integer> {
 	List<Recommend> findByPostsId(Post postsId);
 
 	List<Recommend> findByRepliesId(Reply repliesId);
+	
+	Recommend findByPostsIdAndRepliesId(Post postId,Reply repliesId);
 }

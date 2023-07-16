@@ -13,12 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
+import com.company.model.dto.PostWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.PostLikeRequest;
 import com.company.model.dto.post.request.ReadPostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
-import com.company.model.dto.post.response.PostResponse;
 import com.company.service.PostService;
 
 import lombok.RequiredArgsConstructor;
@@ -40,15 +40,6 @@ public class PostController {
 		return new ResponseEntity<AllPostsResponse>(datas, HttpStatus.OK);
 	}
 
-	// 특정게시글 불러오기
-	@GetMapping("/specificpost")
-	public ResponseEntity<PostResponse> specificReadHandle(ReadPostRequest req) throws NotExistPostException {
-		
-		PostResponse postResponse =	postService.getSpecificPost(req.getPostId());
-
-		return new ResponseEntity<PostResponse>(postResponse,HttpStatus.OK);
-
-	}
 
 	// 신규글 등록
 	@PostMapping("/register")
@@ -70,16 +61,8 @@ public class PostController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	// 게시글 좋아요
-	@PostMapping("/like")
-	public ResponseEntity<?> postLikeHandle(String principal, PostLikeRequest req)
-			throws NotExistUserException, NotExistPostException {
 
-		postService.recommendPost(principal, req.getPostId());
-
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
+	//특정게시글 불러오기
 	@GetMapping("/specific-post")
 	public ResponseEntity<PostWrapper> specificReadHandle(ReadPostRequest req) throws NotExistPostException {
 

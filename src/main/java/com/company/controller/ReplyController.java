@@ -36,7 +36,7 @@ public class ReplyController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	// 특정게시글의 댓글작성
+	// 특정게시글의 댓글,대댓글작성
 	@PostMapping("/register")
 	public ResponseEntity<?> createReplyHandle(String principal, ReplyCreateRequest req)
 			throws NotExistPostException, NotExistUserException {
@@ -44,5 +44,6 @@ public class ReplyController {
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
+	
 
 }

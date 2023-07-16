@@ -18,7 +18,6 @@ import com.company.model.dto.ReplyWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
-import com.company.model.dto.post.response.PostResponse;
 import com.company.model.entity.Image;
 import com.company.model.entity.Post;
 import com.company.model.entity.Recommend;
@@ -107,16 +106,6 @@ public class PostService {
 		post.setPostContent(req.getPostContent());
 
 		postRepository.save(post);
-
-	}
-
-	public void recommendPost(String email, Integer postNumber) throws NotExistUserException, NotExistPostException {
-
-		User user = userRepository.findByEmail(email).orElseThrow(() -> new NotExistUserException());
-		Post post = postRepository.findById(postNumber).orElseThrow(() -> new NotExistPostException());
-
-		Recommend recommend = Recommend.builder().usersId(user).postsId(post).build();
-		recommendRepository.save(recommend);
 
 	}
 
