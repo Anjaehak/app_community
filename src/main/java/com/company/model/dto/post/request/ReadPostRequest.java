@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ReadPostRequest {
-
+  
 	private Integer id;
+
 }

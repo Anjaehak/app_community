@@ -18,6 +18,7 @@ import com.company.model.dto.ReplyWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
+import com.company.model.dto.post.response.PostResponse;
 import com.company.model.entity.Image;
 import com.company.model.entity.Post;
 import com.company.model.entity.Recommend;
@@ -69,7 +70,7 @@ public class PostService {
 		post.setPostWriter(user);
 
 		var saved = postRepository.save(post);
-
+		System.out.println(req.getAttaches());
 		if (req.getAttaches() != null) { // 파일이 넘어왔다면
 			File uploadDirectory = new File(uploadBaseDir + "/feed/" + saved.getId());
 			uploadDirectory.mkdirs();
@@ -120,7 +121,6 @@ public class PostService {
 	}
 
 	public PostWrapper getSpecificPost(Integer id) throws NumberFormatException, NotExistPostException {
-
 		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
 
 		if (replyRepository.findByPostsId(post).size() == 0) {
@@ -155,5 +155,4 @@ public class PostService {
 			return new PostWrapper(post, replyWrapperLi, recommendCnt);
 		}
 	}
-
 }

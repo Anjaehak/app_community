@@ -71,7 +71,7 @@ public class UserController {
 
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
-
+	
 	@PatchMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> verifyCodeHandle(@Valid CertifyCodeRequest req) throws CertifyFailException {
 

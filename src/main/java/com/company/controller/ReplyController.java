@@ -2,6 +2,7 @@ package com.company.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/app_comunity/v1/reply")
 @RequiredArgsConstructor
+@CrossOrigin
 public class ReplyController {
 	private final PostRepository postRepository;
 	private final ReplyService replyService;
