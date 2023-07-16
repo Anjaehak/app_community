@@ -20,6 +20,7 @@ import com.company.model.dto.ReplyWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
+import com.company.model.dto.post.response.PostResponse;
 import com.company.model.entity.Image;
 import com.company.model.entity.Post;
 import com.company.model.entity.Recommend;
@@ -71,7 +72,7 @@ public class PostService {
 		post.setPostWriter(user);
 
 		var saved = postRepository.save(post);
-
+		System.out.println(req.getAttaches());
 		if (req.getAttaches() != null) { // 파일이 넘어왔다면
 			File uploadDirectory = new File(uploadBaseDir + "/feed/" + saved.getId());
 			uploadDirectory.mkdirs();
@@ -132,6 +133,21 @@ public class PostService {
 
 		ReReplyWrapper asc = new ReReplyWrapper();
 
+	}
+
+	public PostResponse getSpecificPost(Integer postId) throws NotExistPostException {
+
+		Post post = postRepository.findById(postId).orElseThrow(() -> new NotExistPostException());
+		var postResponse = new PostResponse();
+		postResponse.setId(post.getId());
+		postResponse.setImages(post.getImages());
+		postResponse.setPostContent(post.getPostContent());
+		postResponse.setPostDate(post.getPostDate());
+		postResponse.setPostWriter(post.getPostWriter());
+		postResponse.setReplies(post.getReplies());
+		postResponse.setTitle(post.getTitle());
+
+		return postResponse;
 	}
 
 }
