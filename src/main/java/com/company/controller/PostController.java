@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
 import com.company.model.dto.post.request.CreatePostRequest;
+import com.company.model.dto.post.request.PostLikeRequest;
 import com.company.model.dto.post.request.ReadPostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
@@ -67,6 +68,25 @@ public class PostController {
 		postService.update(principal, req);
 
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	// 게시글 좋아요
+	@PostMapping("/like")
+	public ResponseEntity<?> postLikeHandle(String principal, PostLikeRequest req)
+			throws NotExistUserException, NotExistPostException {
+
+		postService.recommendPost(principal, req.getPostId());
+
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@GetMapping("/specific-post")
+	public ResponseEntity<PostWrapper> specificReadHandle(ReadPostRequest req) throws NotExistPostException {
+
+		PostWrapper postResponse = postService.getSpecificPost(req.getId());
+
+		return new ResponseEntity<PostWrapper>(postResponse, HttpStatus.OK);
+
 	}
 
 }

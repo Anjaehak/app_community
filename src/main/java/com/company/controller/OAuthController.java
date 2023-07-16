@@ -55,7 +55,7 @@ public class OAuthController {
 		return new ResponseEntity<OAuthSignResponse>(response, HttpStatus.OK);
 	}
 
-	@PostMapping("/kakao")
+	@GetMapping("/kakao/token")
 	public ResponseEntity<ValidateUserResponse> kakaoLoginTokenHandle(ValidateKakaoRequest req)
 			throws JsonMappingException, JsonProcessingException {
 
