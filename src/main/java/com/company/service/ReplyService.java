@@ -38,9 +38,18 @@ public class ReplyService {
 			throws NotExistPostException, NotExistUserException {
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 		Post post = postRepository.findById(req.getPostId()).orElseThrow(() -> new NotExistPostException());
-		Reply reply = Reply.builder().parentId(0).postsId(post).replyContent(req.getReplyContent()).replyWriter(user)
-				.build();
-		replyRepository.save(reply);
+		//댓글 생성
+		if(req.getParentId() == null) {
+			
+			Reply reply = Reply.builder().parentId(0).postsId(post).replyContent(req.getReplyContent()).replyWriter(user)
+					.build();
+			replyRepository.save(reply);
+		//대댓글 생성
+		}else {
+			Reply reply = Reply.builder().parentId(req.getParentId()).postsId(post).replyContent(req.getReplyContent()).replyWriter(user)
+					.build();
+			replyRepository.save(reply);
+		}
 
 	}
 
