@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
+import com.company.model.dto.ImageWrapper;
 import com.company.model.dto.PostWrapper;
 import com.company.model.dto.ReReplyWrapper;
 import com.company.model.dto.ReplyWrapper;
@@ -44,7 +45,6 @@ public class PostService {
 	private final UserRepository userRepository;
 	private final ImageRepository imageRepository;
 	private final RecommendRepository recommendRepository;
-
 	private final ReplyRepository replyRepository;
 
 	public AllPostsResponse allPosts() {
@@ -112,6 +112,9 @@ public class PostService {
 	public PostWrapper getSpecificPost(Integer id) throws NumberFormatException, NotExistPostException {
 		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
 
+		List<Image> images = imageRepository.findByPostsId(post);
+		List<ImageWrapper> imageWrappers = images.stream().map(e -> new ImageWrapper(e)).toList();
+
 		if (replyRepository.findByPostsId(post).size() == 0) {
 			int recommendCnt = recommendRepository.findByPostsId(post).size();
 
@@ -141,7 +144,7 @@ public class PostService {
 
 			int recommendCnt = recommendRepository.findByPostsId(post).size();
 
-			return new PostWrapper(post, replyWrapperLi, recommendCnt);
+			return new PostWrapper(post, replyWrapperLi, recommendCnt, imageWrappers);
 		}
 	}
 }

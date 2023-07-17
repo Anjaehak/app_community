@@ -3,6 +3,8 @@ package com.company.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.company.exception.NotExistUserException;
@@ -33,7 +35,7 @@ public class ChatService {
 		// 회원가입한 유저인지 확인
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 
-		List<Chat> chats = chatRepository.findAll();
+		List<Chat> chats = chatRepository.findAll(Sort.by("chat_date").descending());
 		List<ChatWrapper> chatWrappers = new ArrayList<>();
 		for (Chat chat : chats) {
 			var chatWrapper = new ChatWrapper(chat);
