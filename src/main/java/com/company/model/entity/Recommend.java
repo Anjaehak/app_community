@@ -8,14 +8,18 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "recommends", uniqueConstraints = {
 		@UniqueConstraint(name = "recommends_01", columnNames = { "post_id", "user_id" }) })
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Recommend {
 
 	@Id
@@ -29,7 +33,7 @@ public class Recommend {
 	@ManyToOne
 	@JoinColumn(name = "reply_id")
 	private Reply repliesId;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User usersId;

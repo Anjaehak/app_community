@@ -3,6 +3,10 @@ package com.company.model.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.company.model.dto.UserWrapper;
+import com.company.model.dto.post.request.CreatePostRequest;
+import com.company.model.dto.post.request.UpdatePostRequest;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,6 +35,7 @@ public class Post {
 
 	private String postContent;
 	private LocalDateTime postDate;
+	private int views;
 
 	// 글의 댓글 모음
 	@OneToMany(mappedBy = "postsId")
@@ -43,5 +48,38 @@ public class Post {
 	@PrePersist
 	public void prePersist() {
 		this.postDate = LocalDateTime.now();
+	}
+
+	public Post() {
+		super();
+	}
+
+	public Post(Post post) {
+		super();
+		this.id = post.getId();
+		this.title = post.getTitle();
+		this.postWriter = post.getPostWriter();
+		this.postContent = post.getPostContent();
+		this.postDate = post.getPostDate();
+		this.views = post.getViews() + 1;
+	}
+
+	public Post(CreatePostRequest req, User user) {
+		this.title = req.getTitle();
+		this.postWriter = user;
+		this.postContent = req.getPostContent();
+		this.postDate = LocalDateTime.now();
+		this.views = 0;
+
+	}
+
+	public Post(Post post, UpdatePostRequest req) {
+		this.id = req.getId();
+		this.title = req.getTitle();
+		this.postWriter = post.getPostWriter();
+		this.postContent = req.getPostContent();
+		this.postDate = LocalDateTime.now();
+		this.views = post.getViews();
+
 	}
 }

@@ -15,7 +15,6 @@ import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistUserException;
 import com.company.model.dto.PostWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
-import com.company.model.dto.post.request.PostLikeRequest;
 import com.company.model.dto.post.request.ReadPostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
@@ -40,7 +39,6 @@ public class PostController {
 		return new ResponseEntity<AllPostsResponse>(datas, HttpStatus.OK);
 	}
 
-
 	// 신규글 등록
 	@PostMapping("/register")
 	public ResponseEntity<?> createNewPostHandle(String principal, CreatePostRequest req)
@@ -53,16 +51,15 @@ public class PostController {
 	}
 
 	// 게시글 수정
-	@PatchMapping("/retouch")
-	public ResponseEntity<?> postOperationHandle(String principal, UpdatePostRequest req)
+	@PatchMapping("/modify")
+	public ResponseEntity<?> postModifyHandle(String principal, UpdatePostRequest req)
 			throws NotExistUserException, NotExistPostException {
 		postService.update(principal, req);
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-
-	//특정게시글 불러오기
+	// 특정게시글 불러오기
 	@GetMapping("/specific-post")
 	public ResponseEntity<PostWrapper> specificReadHandle(ReadPostRequest req) throws NotExistPostException {
 

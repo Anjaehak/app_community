@@ -83,29 +83,24 @@ public class SocialLoginService {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode node = mapper.readTree(response.getBody());
 
-		String email = node.get("id").asText("") + "@kakao.user";
+		String email = node.get("id").asText("") + "@kakao.user.social";
 		String nickname = node.get("kakao_account").get("profile").get("nickname").asText();
-		String profileImage = node.get("kakao_account").get("profile").get("profile_image_url").asText();
 
-		return new SocialAccount(email, nickname, profileImage);
+		return new SocialAccount(email, nickname);
 	}
 
-	public void sendKakaoUnlink(String tokenEmailValue) throws NotExistUserException {
+	public void unlinkKakao(String tokenEmailValue) throws NotExistUserException {
 		User found = userRepository.findByEmail(tokenEmailValue).orElseThrow(() -> new NotExistUserException());
-
-		String accessToken = found.getSocialToken();
 
 		String apiAddress = "https://kapi.kakao.com/v1/user/unlink";
 
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add("Authorization", "Bearer " + accessToken);
+		headers.add("Authorization", "Bearer " + found.getSocialToken());
 
 		RestTemplate template = new RestTemplate();
 
 		RequestEntity<Void> request = new RequestEntity<>(headers, HttpMethod.POST, URI.create(apiAddress));
-		ResponseEntity<String> response = template.exchange(request, String.class);
-
-		log.info("unlink response = {}", response.getBody());
+		template.exchange(request, String.class);
 
 	}
 
@@ -149,13 +144,30 @@ public class SocialLoginService {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode node = mapper.readTree(response.getBody());
 
-		log.info("node = {}", node.toString());
-
 		String email = node.get("response").get("id").asText("") + "@naver.user.social";
 		String nickname = node.get("response").get("nickname").asText();
-		String profileImage = "";
 
-		return new SocialAccount(email, nickname, profileImage);
+		return new SocialAccount(email, nickname);
+	}
+
+	public void unlinkNaver(String tokenEmailValue) throws NotExistUserException {
+		User found = userRepository.findByEmail(tokenEmailValue).orElseThrow(() -> new NotExistUserException());
+
+		String apiAddress = "https://nid.naver.com/oauth2.0/token";
+
+		MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+		body.add("grant_type", "delete");
+		body.add("client_id", naverId);
+		body.add("client_secret", naverKey);
+		body.add("access_token", found.getSocialToken());
+
+		RestTemplate template = new RestTemplate();
+
+		RequestEntity<MultiValueMap<String, String>> request = new RequestEntity<>(body, HttpMethod.POST,
+				URI.create(apiAddress));
+
+		template.exchange(request, String.class);
+
 	}
 
 }
