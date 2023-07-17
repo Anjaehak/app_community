@@ -11,5 +11,4 @@ public class SocialAccount {
 
 	String email;
 	String nick;
-	String profileImage;
 }

@@ -61,31 +61,23 @@ public class PostService {
 	public void save(String principal, CreatePostRequest req)
 			throws NotExistUserException, IllegalStateException, IOException {
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
-		Post post = new Post();
-		LocalDateTime currentTime = LocalDateTime.now();
-		post.setPostContent(req.getPostContent());
-		post.setPostDate(currentTime);
-		post.setTitle(req.getTitle());
-		post.setPostWriter(user);
+		Post post = new Post(req, user);
+		Post saved = postRepository.save(post);
 
-		var saved = postRepository.save(post);
-		System.out.println(req.getAttaches());
-		if (req.getAttaches() != null) { // 파일이 넘어왔다면
-			File uploadDirectory = new File(uploadBaseDir + "/feed/" + saved.getId());
+		if (req.getAttaches() != null) {
+			File uploadDirectory = new File(uploadBaseDir + "/post/" + saved.getId());
 			uploadDirectory.mkdirs();
 
-			for (MultipartFile multi : req.getAttaches()) { // 하나씩 반복문 돌면서
-				// 어디다가 file 옮겨둘껀지 File 객체로 정의하고
+			for (MultipartFile multi : req.getAttaches()) {
 				String fileName = String.valueOf(System.currentTimeMillis());
 				String extension = multi.getOriginalFilename().split("\\.")[1];
 				File dest = new File(uploadDirectory, fileName + "." + extension);
 
-				multi.transferTo(dest); // 옮기는걸 진행
+				multi.transferTo(dest);
 
-				// 업로드가 끝나면 DB에 기록
 				Image image = new Image();
-				// 업로드를 한 곳이 어디냐에 따라서 결정이 되는 값
-				image.setImageUrl(uploadServer + "/resource/feed/" + saved.getId() + "/" + fileName + "." + extension);
+
+				image.setImageUrl(uploadServer + "/post/" + saved.getId() + "/" + fileName + "." + extension);
 				image.setPostsId(saved);
 
 				imageRepository.save(image);
@@ -95,22 +87,23 @@ public class PostService {
 	}
 
 	public void update(String principal, UpdatePostRequest req) throws NotExistUserException, NotExistPostException {
-		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
-		System.out.println("user id =" + user.getId());
+		userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 		Integer id = req.getId();
 
 		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
-		LocalDateTime currentTime = LocalDateTime.now();
-		post.setTitle(req.getTitle());
-		post.setPostDate(currentTime);
-		post.setPostContent(req.getPostContent());
 
-		postRepository.save(post);
+		Post saved = new Post(post, req);
+
+		postRepository.save(saved);
 
 	}
 
 	public PostWrapper getSpecificPost(Integer id) throws NumberFormatException, NotExistPostException {
-		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
+		Post data = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
+
+		Post post = new Post(data);
+
+		postRepository.save(post);
 
 		if (replyRepository.findByPostsId(post).size() == 0) {
 			int recommendCnt = recommendRepository.findByPostsId(post).size();

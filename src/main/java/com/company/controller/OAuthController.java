@@ -82,7 +82,8 @@ public class OAuthController {
 	}
 
 	@GetMapping("/naver/token")
-	public ResponseEntity<?> test(ValidateNaverRequest req) throws JsonMappingException, JsonProcessingException {
+	public ResponseEntity<ValidateUserResponse> test(ValidateNaverRequest req)
+			throws JsonMappingException, JsonProcessingException {
 
 		OAuthAccessTokenWrapper wrapper = socialLoginService.getNaverAccessToken(req);
 		SocialAccount userInfo = socialLoginService.getNaverUserInfo(wrapper.getAccessToken());
@@ -93,6 +94,6 @@ public class OAuthController {
 
 		ValidateUserResponse response = new ValidateUserResponse(200, token, userInfo.getEmail());
 
-		return new ResponseEntity<>(response, HttpStatus.OK);
+		return new ResponseEntity<ValidateUserResponse>(response, HttpStatus.OK);
 	}
 }
