@@ -37,6 +37,8 @@ public class Post {
 	private LocalDateTime postDate;
 	private int views;
 
+	private int view;
+
 	// 글의 댓글 모음
 	@OneToMany(mappedBy = "postsId")
 	private List<Reply> replies;

@@ -18,6 +18,7 @@ public class PostWrapper {
 	private String postContent;
 	private LocalDateTime postDate;
 	private List<ReplyWrapper> replyLi;
+	private List<ImageWrapper> imageLi;
 	private int views;
 	private int recommendCnt;
 
@@ -27,6 +28,8 @@ public class PostWrapper {
 		this.postWriter = entity.getPostWriter().getNick();
 		this.postContent = entity.getPostContent();
 		this.postDate = entity.getPostDate();
+		this.replyLi = entity.getReplies().stream().map(e -> new ReplyWrapper(e)).toList();
+
 	}
 
 	public PostWrapper(Post entity, int recommendCnt) {
@@ -40,7 +43,7 @@ public class PostWrapper {
 
 	}
 
-	public PostWrapper(Post entity, List<ReplyWrapper> replyLi, int recommendCnt) {
+	public PostWrapper(Post entity, List<ReplyWrapper> replyLi, int recommendCnt, List<ImageWrapper> imageLi) {
 		this.id = entity.getId();
 		this.title = entity.getTitle();
 		this.postWriter = entity.getPostWriter().getNick();
@@ -49,6 +52,7 @@ public class PostWrapper {
 		this.replyLi = replyLi;
 		this.views = entity.getViews();
 		this.recommendCnt = recommendCnt;
+		this.imageLi = imageLi;
 	}
 
 }
