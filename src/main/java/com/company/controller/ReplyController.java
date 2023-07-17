@@ -23,27 +23,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @CrossOrigin
 public class ReplyController {
-	private final PostRepository postRepository;
 	private final ReplyService replyService;
 
-	// 특정게시글의 댓글 전체불러오기
-	@GetMapping("/list")
-	public ResponseEntity<?> readAllReplyHandle(ReplyReadRequest req) throws NotExistPostException {
-
-		Post post = postRepository.findById(req.getPostId()).orElseThrow(() -> new NotExistPostException());
-		var comments = replyService.specificPostReplyRead(req);
-
-		return new ResponseEntity<>(HttpStatus.OK);
-	}
-
-	// 특정게시글의 댓글,대댓글작성
-	@PostMapping("/register")
+	// 댓글,대댓글작성
+	@PostMapping("/create")
 	public ResponseEntity<?> createReplyHandle(String principal, ReplyCreateRequest req)
 			throws NotExistPostException, NotExistUserException {
 		replyService.specificPostReplyCreate(principal, req);
 
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
-	
 
 }

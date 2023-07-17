@@ -27,22 +27,22 @@ public class ChatController {
 
 	// 실시간 채팅 등록
 	@PostMapping("/register")
-	public ResponseEntity<?> createNewChatHandle(String principal, CreateChatRequest req) throws NotExistUserException {
+	public ResponseEntity<Void> createNewChatHandle(String principal, CreateChatRequest req)
+			throws NotExistUserException {
 
 		chatService.save(principal, req);
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 
 	}
 
 	// 실시간 채팅 불러오기
 	@GetMapping("/list")
-	// 인증한 사람만 실시간 채팅을 이용할수있게
 	public ResponseEntity<List<ChatWrapper>> allChatHandle(String principal) throws NotExistUserException {
 
 		List<ChatWrapper> chatWrappers = chatService.allChatRead(principal);
 
-		return new ResponseEntity<List<ChatWrapper>>(chatWrappers,HttpStatus.OK);
+		return new ResponseEntity<List<ChatWrapper>>(chatWrappers, HttpStatus.OK);
 
 	}
 }

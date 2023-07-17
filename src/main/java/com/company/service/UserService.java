@@ -78,7 +78,6 @@ public class UserService {
 			User user = new User();
 			user.setEmail(account.getEmail());
 			user.setNick(account.getNick());
-			user.setUserImage(account.getProfileImage());
 			user.setSocialToken(accessToken);
 			userRepository.save(user);
 		}

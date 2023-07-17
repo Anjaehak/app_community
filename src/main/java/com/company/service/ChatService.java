@@ -32,11 +32,11 @@ public class ChatService {
 	}
 
 	public List<ChatWrapper> allChatRead(String principal) throws NotExistUserException {
-		// 회원가입한 유저인지 확인
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 
 		List<Chat> chats = chatRepository.findAll(Sort.by("chat_date").descending());
-		List<ChatWrapper> chatWrappers = new ArrayList<>();
+		
+    List<ChatWrapper> chatWrappers = new ArrayList<>();
 		for (Chat chat : chats) {
 			var chatWrapper = new ChatWrapper(chat);
 			chatWrappers.add(chatWrapper);

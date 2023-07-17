@@ -71,7 +71,7 @@ public class UserController {
 
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
-	
+
 	@PatchMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> verifyCodeHandle(@Valid CertifyCodeRequest req) throws CertifyFailException {
 
@@ -96,9 +96,14 @@ public class UserController {
 	@DeleteMapping
 	public ResponseEntity<Void> deleteUserHandle(String principal, DeleteUserRequest req)
 			throws NotExistUserException, ErrorPasswordException {
-		if (principal.endsWith("social")) {
+		String[] data = principal.split("@");
 
-			socialLoginService.sendKakaoUnlink(principal);
+		if (data[1].endsWith("social")) {
+			if (data[1].startsWith("kakao")) {
+				socialLoginService.unlinkKakao(principal);
+			} else {
+				socialLoginService.unlinkNaver(principal);
+			}
 
 			userService.deleteSpecificSocialUser(principal);
 
