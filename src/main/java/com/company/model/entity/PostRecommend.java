@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "recommends", uniqueConstraints = {
+@Table(name = "postRecommends", uniqueConstraints = {
 		@UniqueConstraint(name = "recommends_01", columnNames = { "post_id", "user_id" }) })
 @Data
 @Builder

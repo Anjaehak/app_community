@@ -27,17 +27,13 @@ public class ReplyWrapper {
 		this.reReplyLi = reReplyLi;
 		this.recommendCnt = recommendCnt;
 	}
-	
+
 	public ReplyWrapper(Reply entity) {
-		this.id=entity.getId();
-		this.replyWriter=new UserWrapper(entity.getReplyWriter());
-		this.replyContent=entity.getReplyContent();
-		this.replyDate=entity.getReplyDate();
-	
-		
-		
-		
+		this.id = entity.getId();
+		this.replyWriter = new UserWrapper(entity.getReplyWriter());
+		this.replyContent = entity.getReplyContent();
+		this.replyDate = entity.getReplyDate();
+
 	}
-	
 
 }

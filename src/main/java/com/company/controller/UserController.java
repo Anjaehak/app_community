@@ -14,6 +14,8 @@ import com.company.exception.AlreadyCertifyException;
 import com.company.exception.CertifyFailException;
 import com.company.exception.ErrorPasswordException;
 import com.company.exception.ExistUserException;
+import com.company.exception.NotExistPostException;
+import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
 import com.company.model.dto.SocialAccount;
 import com.company.model.dto.user.request.CertifyCodeRequest;
@@ -95,7 +97,7 @@ public class UserController {
 
 	@DeleteMapping
 	public ResponseEntity<Void> deleteUserHandle(String principal, DeleteUserRequest req)
-			throws NotExistUserException, ErrorPasswordException {
+			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
 		String[] data = principal.split("@");
 
 		if (data[1].endsWith("social")) {

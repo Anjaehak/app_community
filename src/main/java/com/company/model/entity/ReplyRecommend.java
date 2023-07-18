@@ -14,7 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "recommends", uniqueConstraints = {
+@Table(name = "replyRecommends", uniqueConstraints = {
 		@UniqueConstraint(name = "recommends_01", columnNames = { "reply_id", "user_id" }) })
 @Data
 @Builder
@@ -28,7 +28,7 @@ public class ReplyRecommend {
 
 	@ManyToOne
 	@JoinColumn(name = "reply_id")
-	private Reply replyId;
+	private Reply repliesId;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
