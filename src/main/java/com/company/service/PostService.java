@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,8 +59,17 @@ public class PostService {
 
 	private final ReplyService replyService;
 
-	public AllPostsResponse allPosts() {
-		List<Post> postLi = postRepository.findAll();
+	public AllPostsResponse allPosts(Integer page) {
+
+		if (page == null) {
+			page = 1;
+		}
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "postDate");
+
+		Pageable pageable = PageRequest.of(page - 1, 10, sort);
+
+		List<Post> postLi = postRepository.findAll(pageable).getContent();
 
 		List<PostWrapper> li = postLi.stream().map(e -> new PostWrapper(e)).toList();
 

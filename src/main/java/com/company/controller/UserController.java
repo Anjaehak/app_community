@@ -17,7 +17,6 @@ import com.company.exception.ExistUserException;
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
-import com.company.model.dto.SocialAccount;
 import com.company.model.dto.user.request.CertifyCodeRequest;
 import com.company.model.dto.user.request.CertifyEmailRequest;
 import com.company.model.dto.user.request.DeleteUserRequest;
@@ -34,7 +33,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/app_comunity/v1/user")
+@RequestMapping("/app_community/v1/user")
 @RequiredArgsConstructor
 @CrossOrigin
 public class UserController {

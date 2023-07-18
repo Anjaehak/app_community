@@ -19,7 +19,6 @@ import com.company.model.dto.user.request.DeleteUserRequest;
 import com.company.model.dto.user.request.JoinUserRequest;
 import com.company.model.dto.user.request.ValidateUserRequest;
 import com.company.model.entity.Certify;
-import com.company.model.entity.Chat;
 import com.company.model.entity.Post;
 import com.company.model.entity.User;
 import com.company.repository.CertifyRepository;

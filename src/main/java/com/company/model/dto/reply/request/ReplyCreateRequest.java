@@ -2,8 +2,6 @@ package com.company.model.dto.reply.request;
 
 import java.time.LocalDateTime;
 
-import org.springframework.data.annotation.Persistent;
-
 import lombok.Data;
 
 @Data

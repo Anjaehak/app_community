@@ -3,7 +3,6 @@ package com.company.model.dto;
 import java.time.LocalDateTime;
 
 import com.company.model.entity.Chat;
-import com.company.model.entity.User;
 
 import lombok.Data;
 

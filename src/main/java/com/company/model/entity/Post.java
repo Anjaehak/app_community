@@ -3,7 +3,6 @@ package com.company.model.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.company.model.dto.UserWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 

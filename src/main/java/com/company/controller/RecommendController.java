@@ -18,7 +18,7 @@ import com.company.service.RecommendService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/app_comunity/v1/recommend")
+@RequestMapping("/app_community/v1/recommend")
 @RequiredArgsConstructor
 @CrossOrigin
 public class RecommendController {

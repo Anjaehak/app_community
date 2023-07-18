@@ -2,6 +2,8 @@ package com.company.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -32,10 +34,18 @@ public class ChatService {
 		return response;
 	}
 
-	public List<ChatWrapper> allChatRead(String principal) throws NotExistUserException {
+	public List<ChatWrapper> allChatRead(String principal, Integer page) throws NotExistUserException {
 		userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 
-		List<Chat> chats = chatRepository.findAll(Sort.by("chatDate").descending());
+		if (page == null) {
+			page = 1;
+		}
+
+		Sort sort = Sort.by(Sort.Direction.DESC, "chatDate");
+
+		Pageable pageable = PageRequest.of(page - 1, 10, sort);
+
+		List<Chat> chats = chatRepository.findAll(pageable).getContent();
 
 		List<ChatWrapper> chatWrappers = chats.stream().map(e -> new ChatWrapper(e)).toList();
 
