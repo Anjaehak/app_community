@@ -82,7 +82,7 @@ public class OAuthController {
 	}
 
 	@GetMapping("/naver/token")
-	public ResponseEntity<ValidateUserResponse> test(ValidateNaverRequest req)
+	public ResponseEntity<ValidateUserResponse> naverLoginTokenHandle(ValidateNaverRequest req)
 			throws JsonMappingException, JsonProcessingException {
 
 		OAuthAccessTokenWrapper wrapper = socialLoginService.getNaverAccessToken(req);

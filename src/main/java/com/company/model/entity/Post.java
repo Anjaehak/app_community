@@ -37,8 +37,6 @@ public class Post {
 	private LocalDateTime postDate;
 	private int views;
 
-	private int view;
-
 	// 글의 댓글 모음
 	@OneToMany(mappedBy = "postsId")
 	private List<Reply> replies;
@@ -63,7 +61,7 @@ public class Post {
 		this.postWriter = post.getPostWriter();
 		this.postContent = post.getPostContent();
 		this.postDate = post.getPostDate();
-		this.replies =post.getReplies();
+		this.replies = post.getReplies();
 		this.views = post.getViews() + 1;
 	}
 

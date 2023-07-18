@@ -41,7 +41,7 @@ public class PostController {
 
 	// 신규글 등록
 	@PostMapping("/register")
-	public ResponseEntity<?> createNewPostHandle(String principal, CreatePostRequest req)
+	public ResponseEntity<Void> createNewPostHandle(String principal, CreatePostRequest req)
 			throws NotExistUserException, IllegalStateException, IOException {
 
 		postService.save(principal, req);
@@ -52,7 +52,7 @@ public class PostController {
 
 	// 게시글 수정
 	@PatchMapping("/modify")
-	public ResponseEntity<?> postModifyHandle(String principal, UpdatePostRequest req)
+	public ResponseEntity<Void> modifyPostHandle(String principal, UpdatePostRequest req)
 			throws NotExistUserException, NotExistPostException {
 		postService.update(principal, req);
 
@@ -61,7 +61,7 @@ public class PostController {
 
 	// 특정게시글 불러오기
 	@GetMapping("/specific-post")
-	public ResponseEntity<PostWrapper> specificReadHandle(ReadPostRequest req) throws NotExistPostException {
+	public ResponseEntity<PostWrapper> specificReadPostHandle(ReadPostRequest req) throws NotExistPostException {
 
 		PostWrapper postResponse = postService.getSpecificPost(req.getId());
 

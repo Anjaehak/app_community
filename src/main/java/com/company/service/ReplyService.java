@@ -49,8 +49,12 @@ public class ReplyService {
 	public void specificPostReplyDelete(String pricipal, ReplyDeleteRequest req) throws NotExistReplyException {
 		Reply replyData = replyRepository.findById(req.getId()).orElseThrow(() -> new NotExistReplyException());
 
-		replyRecommendRepository.deleteAllByRepliesId(replyData);
-		replyRepository.deleteById(replyData.getId());
+		if (replyData.getReplyWriter().getEmail().equals(pricipal)) {
+
+			replyRecommendRepository.deleteAllByRepliesId(replyData);
+			replyRepository.deleteById(replyData.getId());
+		}
+
 	}
 
 }
