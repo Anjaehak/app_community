@@ -44,7 +44,7 @@ public class Reply {
 	private LocalDateTime replyDate;
 
 	@OneToMany(mappedBy = "repliesId")
-	private List<PostRecommend> recommends;
+	private List<ReplyRecommend> recommends;
 
 	@PrePersist
 	public void prePersist() {

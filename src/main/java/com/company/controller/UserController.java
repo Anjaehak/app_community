@@ -95,7 +95,7 @@ public class UserController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@DeleteMapping
+	@DeleteMapping("/delete")
 	public ResponseEntity<Void> deleteUserHandle(String principal, DeleteUserRequest req)
 			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
 		String[] data = principal.split("@");
