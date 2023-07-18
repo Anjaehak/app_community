@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AppComunityApplication {
+public class AppCommunityApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AppComunityApplication.class, args);
+		SpringApplication.run(AppCommunityApplication.class, args);
 	}
 
 }
