@@ -1,7 +1,6 @@
 package com.company.model.dto;
 
 import com.company.model.entity.Image;
-import com.company.model.entity.Post;
 
 import lombok.Data;
 

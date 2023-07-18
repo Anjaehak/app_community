@@ -18,7 +18,7 @@ import com.company.service.ChatService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/app_comunity/v1/chat")
+@RequestMapping("/app_community/v1/chat")
 @RequiredArgsConstructor
 @CrossOrigin
 public class ChatController {
@@ -38,9 +38,10 @@ public class ChatController {
 
 	// 실시간 채팅 불러오기
 	@GetMapping("/list")
-	public ResponseEntity<List<ChatWrapper>> allChatHandle(String principal) throws NotExistUserException {
+	public ResponseEntity<List<ChatWrapper>> allChatHandle(String principal, Integer page)
+			throws NotExistUserException {
 
-		List<ChatWrapper> chatWrappers = chatService.allChatRead(principal);
+		List<ChatWrapper> chatWrappers = chatService.allChatRead(principal, page);
 
 		return new ResponseEntity<List<ChatWrapper>>(chatWrappers, HttpStatus.OK);
 

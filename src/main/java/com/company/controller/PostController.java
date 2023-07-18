@@ -23,7 +23,7 @@ import com.company.service.PostService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/app_comunity/v1/post")
+@RequestMapping("/app_community/v1/post")
 @RequiredArgsConstructor
 @CrossOrigin
 public class PostController {
@@ -32,9 +32,9 @@ public class PostController {
 
 	// 전체글 불러오기
 	@GetMapping("/list")
-	public ResponseEntity<AllPostsResponse> readAllPostHandle() {
+	public ResponseEntity<AllPostsResponse> readAllPostHandle(Integer page) {
 
-		AllPostsResponse datas = postService.allPosts();
+		AllPostsResponse datas = postService.allPosts(page);
 
 		return new ResponseEntity<AllPostsResponse>(datas, HttpStatus.OK);
 	}
