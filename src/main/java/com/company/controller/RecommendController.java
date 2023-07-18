@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/app_comunity/v1/recommend")
 @RequiredArgsConstructor
 @CrossOrigin
-public class LikeController {
+public class RecommendController {
 
 	private final RecommendService recommendService;
 
@@ -30,7 +30,7 @@ public class LikeController {
 	public ResponseEntity<Void> postLikeHandle(String principal, LikeRequest req)
 			throws NotExistUserException, NotExistPostException, NotExistReplyException {
 
-		recommendService.recommendPost(principal, req);
+		recommendService.createRecommend(principal, req);
 
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -40,7 +40,7 @@ public class LikeController {
 	public ResponseEntity<Void> postUnLikeHandle(String principal, LikeRequest req)
 			throws NotExistPostException, NotExistUserException, NoRecommedException, NotExistReplyException {
 
-		recommendService.unRecommendPost(principal, req);
+		recommendService.deleteRecommend(principal, req);
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 }

@@ -1,5 +1,6 @@
 package com.company.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -8,15 +9,21 @@ import org.springframework.transaction.annotation.Transactional;
 import com.company.exception.CertifyFailException;
 import com.company.exception.ErrorPasswordException;
 import com.company.exception.ExistUserException;
+import com.company.exception.NotExistPostException;
+import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
 import com.company.model.dto.SocialAccount;
+import com.company.model.dto.post.request.PostDeleteRequest;
 import com.company.model.dto.user.request.CertifyEmailRequest;
 import com.company.model.dto.user.request.DeleteUserRequest;
 import com.company.model.dto.user.request.JoinUserRequest;
 import com.company.model.dto.user.request.ValidateUserRequest;
 import com.company.model.entity.Certify;
+import com.company.model.entity.Chat;
+import com.company.model.entity.Post;
 import com.company.model.entity.User;
 import com.company.repository.CertifyRepository;
+import com.company.repository.ChatRepository;
 import com.company.repository.UserRepository;
 
 import jakarta.validation.Valid;
@@ -29,6 +36,10 @@ public class UserService {
 	private final UserRepository userRepository;
 
 	private final CertifyRepository certifyRepository;
+
+	private final PostService postService;
+
+	private final ChatRepository chatRepository;
 
 	@Transactional
 	public void createUser(JoinUserRequest dto) throws ExistUserException, CertifyFailException {
@@ -86,19 +97,30 @@ public class UserService {
 
 	@Transactional
 	public void deleteSpecificUser(String principal, DeleteUserRequest req)
-			throws NotExistUserException, ErrorPasswordException {
+			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 		if (!user.getPassword().equals(req.getPassword())) {
 			throw new ErrorPasswordException();
 		}
+		List<Post> postDatas = user.getPosts();
+		for (Post post : postDatas) {
+			postService.deleteSpecificPost(principal, new PostDeleteRequest(post.getId()));
+		}
+		chatRepository.deleteAllByUsersId(user);
+
 		userRepository.deleteByEmail(principal);
 		certifyRepository.deleteByEmail(principal);
-
 	}
 
-	public void deleteSpecificSocialUser(String email) throws NotExistUserException {
-		User user = userRepository.findByEmail(email).orElseThrow(() -> new NotExistUserException());
-		userRepository.delete(user);
+	public void deleteSpecificSocialUser(String principal)
+			throws NotExistUserException, NotExistPostException, NotExistReplyException {
+		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
+		List<Post> postDatas = user.getPosts();
+		for (Post post : postDatas) {
+			postService.deleteSpecificPost(principal, new PostDeleteRequest(post.getId()));
+		}
+		chatRepository.deleteAllByUsersId(user);
 
+		userRepository.delete(user);
 	}
 }
