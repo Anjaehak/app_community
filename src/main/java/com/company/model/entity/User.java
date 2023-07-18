@@ -45,7 +45,7 @@ public class User {
 
 	// 유저가 추천한 글 모음
 	@OneToMany(mappedBy = "usersId")
-	private List<Recommend> recommends;
+	private List<PostRecommend> recommends;
 
 	// 유저가 등록한 채팅 모음
 	@OneToMany(mappedBy = "usersId")

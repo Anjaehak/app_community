@@ -32,17 +32,16 @@ public class ChatService {
 	}
 
 	public List<ChatWrapper> allChatRead(String principal) throws NotExistUserException {
-		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
+		userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 
-		List<Chat> chats = chatRepository.findAll(Sort.by("chat_date").descending());
-		
-    List<ChatWrapper> chatWrappers = new ArrayList<>();
+		List<Chat> chats = chatRepository.findAll(Sort.by("chatDate").descending());
+
+		List<ChatWrapper> chatWrappers = new ArrayList<>();
 		for (Chat chat : chats) {
 			var chatWrapper = new ChatWrapper(chat);
 			chatWrappers.add(chatWrapper);
 		}
+
 		return chatWrappers;
-
 	}
-
 }

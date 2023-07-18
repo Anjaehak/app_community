@@ -2,7 +2,6 @@ package com.company.service;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,22 +10,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.company.exception.NotExistPostException;
+import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
 import com.company.model.dto.ImageWrapper;
 import com.company.model.dto.PostWrapper;
 import com.company.model.dto.ReReplyWrapper;
 import com.company.model.dto.ReplyWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
+import com.company.model.dto.post.request.PostDeleteRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
+import com.company.model.dto.reply.request.ReplyDeleteRequest;
 import com.company.model.entity.Image;
 import com.company.model.entity.Post;
-import com.company.model.entity.Recommend;
 import com.company.model.entity.Reply;
 import com.company.model.entity.User;
 import com.company.repository.ImageRepository;
+import com.company.repository.PostRecommendRepository;
 import com.company.repository.PostRepository;
-import com.company.repository.RecommendRepository;
+import com.company.repository.ReplyRecommendRepository;
 import com.company.repository.ReplyRepository;
 import com.company.repository.UserRepository;
 
@@ -42,10 +44,15 @@ public class PostService {
 	String uploadBaseDir;
 
 	private final PostRepository postRepository;
+	private final PostRecommendRepository postRecommendRepository;
+
 	private final UserRepository userRepository;
 	private final ImageRepository imageRepository;
-	private final RecommendRepository recommendRepository;
+
 	private final ReplyRepository replyRepository;
+	private final ReplyRecommendRepository replyRecommendRepository;
+
+	private final ReplyService replyService;
 
 	public AllPostsResponse allPosts() {
 		List<Post> postLi = postRepository.findAll();
@@ -109,7 +116,7 @@ public class PostService {
 		List<ImageWrapper> imageWrappers = images.stream().map(e -> new ImageWrapper(e)).toList();
 
 		if (replyRepository.findByPostsId(post).size() == 0) {
-			int recommendCnt = recommendRepository.findByPostsId(post).size();
+			int recommendCnt = postRecommendRepository.findByPostsId(post).size();
 
 			return new PostWrapper(post, recommendCnt);
 		} else {
@@ -124,20 +131,34 @@ public class PostService {
 
 				for (Reply in : replyDatas) {
 					if (out.getId().equals(in.getParentId())) {
-						int recommendCnt = recommendRepository.findByRepliesId(in).size();
+						int recommendCnt = replyRecommendRepository.findByRepliesId(in).size();
 
 						reReplyWrapperLi.add(new ReReplyWrapper(in, recommendCnt));
 					}
 				}
-				int recommendCnt = recommendRepository.findByRepliesId(out).size();
+				int recommendCnt = replyRecommendRepository.findByRepliesId(out).size();
 				ReplyWrapper replyWrapper = new ReplyWrapper(out, reReplyWrapperLi, recommendCnt);
 
 				replyWrapperLi.add(replyWrapper);
 			}
 
-			int recommendCnt = recommendRepository.findByPostsId(post).size();
+			int recommendCnt = postRecommendRepository.findByPostsId(post).size();
 
 			return new PostWrapper(post, replyWrapperLi, recommendCnt, imageWrappers);
 		}
+	}
+
+	public void deleteSpecificPost(String principal, PostDeleteRequest req)
+			throws NotExistPostException, NotExistReplyException {
+		Post postData = postRepository.findById(req.getId()).orElseThrow(() -> new NotExistPostException());
+
+		List<Reply> replyDatas = postData.getReplies();
+
+		for (Reply reply : replyDatas) {
+
+			replyService.specificPostReplyDelete(principal, new ReplyDeleteRequest(reply.getId()));
+		}
+
+		postRepository.delete(postData);
 	}
 }
