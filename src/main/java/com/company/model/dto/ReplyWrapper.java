@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class ReplyWrapper {
 
 	private Integer id;
-	private String replyWriter;
+	private UserWrapper replyWriter;
 	private String replyContent;
 	private LocalDateTime replyDate;
 	private List<ReReplyWrapper> reReplyLi;
@@ -21,7 +21,7 @@ public class ReplyWrapper {
 
 	public ReplyWrapper(Reply entity, List<ReReplyWrapper> reReplyLi, int recommendCnt) {
 		this.id = entity.getId();
-		this.replyWriter = entity.getReplyWriter().getNick();
+		this.replyWriter = new UserWrapper(entity.getReplyWriter());
 		this.replyContent = entity.getReplyContent();
 		this.replyDate = entity.getReplyDate();
 		this.reReplyLi = reReplyLi;
@@ -30,8 +30,10 @@ public class ReplyWrapper {
 
 	public ReplyWrapper(Reply entity) {
 		this.id = entity.getId();
-		this.replyWriter = entity.getReplyWriter().getNick();
+		this.replyWriter = new UserWrapper(entity.getReplyWriter());
 		this.replyContent = entity.getReplyContent();
 		this.replyDate = entity.getReplyDate();
+
 	}
+
 }

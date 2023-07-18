@@ -1,10 +1,8 @@
 package com.company.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.company.exception.NotExistUserException;
@@ -24,11 +22,14 @@ public class ChatService {
 	private final UserRepository userRepository;
 	private final ChatRepository chatRepository;
 
-	public void save(String principal, CreateChatRequest req) throws NotExistUserException {
+	public ChatWrapper save(String principal, CreateChatRequest req) throws NotExistUserException {
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 
 		Chat chat = Chat.builder().usersId(user).chatMessage(req.getChatMessage()).build();
 		chatRepository.save(chat);
+
+		var response = new ChatWrapper(chat);
+		return response;
 	}
 
 	public List<ChatWrapper> allChatRead(String principal) throws NotExistUserException {
@@ -36,11 +37,7 @@ public class ChatService {
 
 		List<Chat> chats = chatRepository.findAll(Sort.by("chatDate").descending());
 
-		List<ChatWrapper> chatWrappers = new ArrayList<>();
-		for (Chat chat : chats) {
-			var chatWrapper = new ChatWrapper(chat);
-			chatWrappers.add(chatWrapper);
-		}
+		List<ChatWrapper> chatWrappers = chats.stream().map(e -> new ChatWrapper(e)).toList();
 
 		return chatWrappers;
 	}

@@ -12,7 +12,7 @@ public class ChatWrapper {
 
 	private Integer id;
 
-	private User usersId;
+	private UserWrapper usersId;
 
 	private String chatMessage;
 
@@ -20,7 +20,7 @@ public class ChatWrapper {
 
 	public ChatWrapper(Chat entity) {
 		this.id = entity.getId();
-		this.usersId = entity.getUsersId();
+		this.usersId = new UserWrapper(entity.getUsersId());
 		this.chatMessage = entity.getChatMessage();
 		this.chatDate = entity.getChatDate();
 	}

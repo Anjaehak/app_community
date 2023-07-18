@@ -33,9 +33,11 @@ import com.company.repository.ReplyRepository;
 import com.company.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PostService {
 
 	@Value("${upload.server}")
@@ -107,29 +109,32 @@ public class PostService {
 
 	public PostWrapper getSpecificPost(Integer id) throws NumberFormatException, NotExistPostException {
 		Post data = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
-
 		Post post = new Post(data);
+		log.warn("post = {}", post.getReplies());
+		Post saved = postRepository.save(post);
 
-		postRepository.save(post);
-
-		List<Image> images = imageRepository.findByPostsId(post);
+//		new PostWrapper(saved);
+		List<Image> images = imageRepository.findByPostsId(saved);
 		List<ImageWrapper> imageWrappers = images.stream().map(e -> new ImageWrapper(e)).toList();
 
 		if (replyRepository.findByPostsId(post).size() == 0) {
 			int recommendCnt = postRecommendRepository.findByPostsId(post).size();
 
-			return new PostWrapper(post, recommendCnt);
+			return new PostWrapper(saved, recommendCnt);
 		} else {
 
-			List<Reply> replyDatas = replyRepository.findByPostsId(post);
-			List<Reply> replyLi = replyDatas.stream().filter(t -> t.getParentId() == null).toList();
+			List<Reply> replyDatas = replyRepository.findByPostsId(saved);
+
+			List<Reply> replyLi = replyDatas.stream().filter(t -> t.getParentId() == 0).toList();
 
 			List<ReReplyWrapper> reReplyWrapperLi = new ArrayList<>();
 			List<ReplyWrapper> replyWrapperLi = new ArrayList<>();
 
 			for (Reply out : replyLi) {
+				log.info("out={}", out);
 
 				for (Reply in : replyDatas) {
+					log.info("in={}", in);
 					if (out.getId().equals(in.getParentId())) {
 						int recommendCnt = replyRecommendRepository.findByRepliesId(in).size();
 
@@ -144,7 +149,7 @@ public class PostService {
 
 			int recommendCnt = postRecommendRepository.findByPostsId(post).size();
 
-			return new PostWrapper(post, replyWrapperLi, recommendCnt, imageWrappers);
+			return new PostWrapper(saved, replyWrapperLi, recommendCnt, imageWrappers);
 		}
 	}
 
