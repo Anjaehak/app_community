@@ -63,6 +63,7 @@ public class Post {
 		this.postWriter = post.getPostWriter();
 		this.postContent = post.getPostContent();
 		this.postDate = post.getPostDate();
+		this.replies =post.getReplies();
 		this.views = post.getViews() + 1;
 	}
 

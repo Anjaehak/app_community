@@ -27,12 +27,12 @@ public class ChatController {
 
 	// 실시간 채팅 등록
 	@PostMapping("/register")
-	public ResponseEntity<Void> createNewChatHandle(String principal, CreateChatRequest req)
+	public ResponseEntity<ChatWrapper> createNewChatHandle(String principal, CreateChatRequest req)
 			throws NotExistUserException {
 
-		chatService.save(principal, req);
+		var response = chatService.save(principal, req);
 
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<ChatWrapper>(response, HttpStatus.OK);
 
 	}
 

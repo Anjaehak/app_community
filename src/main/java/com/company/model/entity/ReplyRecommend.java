@@ -15,24 +15,20 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "recommends", uniqueConstraints = {
-		@UniqueConstraint(name = "recommends_01", columnNames = { "post_id", "user_id" }) })
+		@UniqueConstraint(name = "recommends_01", columnNames = { "reply_id", "user_id" }) })
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Recommend {
+public class ReplyRecommend {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
 	@ManyToOne
-	@JoinColumn(name = "post_id")
-	private Post postsId;
-
-	@ManyToOne
 	@JoinColumn(name = "reply_id")
-	private Reply repliesId;
+	private Reply replyId;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")

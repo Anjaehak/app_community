@@ -3,6 +3,8 @@ package com.company.model.entity;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,7 +47,7 @@ public class User {
 
 	// 유저가 추천한 글 모음
 	@OneToMany(mappedBy = "usersId")
-	private List<Recommend> recommends;
+	private List<PostRecommend> recommends;
 
 	// 유저가 등록한 채팅 모음
 	@OneToMany(mappedBy = "usersId")
