@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.company.exception.ErrorPasswordException;
+import com.company.exception.UnequalPasswordException;
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
@@ -34,7 +34,7 @@ public class DeleteController {
 
 	@DeleteMapping("/user")
 	public ResponseEntity<Void> deleteUserHandle(@AuthenticationPrincipal String principal, DeleteUserRequest req)
-			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
+			throws NotExistUserException, UnequalPasswordException, NotExistPostException, NotExistReplyException {
 		String[] data = principal.split("@");
 
 		if (data[1].endsWith("social")) {

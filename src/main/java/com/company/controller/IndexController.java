@@ -13,11 +13,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @Controller
 public class IndexController {
-	// 유저 생성 컨트롤러
+  
+	// swagger로 리다이렉트 하기 위한 컨트롤러
 	@Operation(summary = "스웨거", description = "스웨거경로로 이동하기 위한 redirectController")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "스웨거 호출 성공", content = @Content(schema = @Schema(implementation = Void.class))) })
-	@RequestMapping("/index")
+	@RequestMapping("/app_community/v1/index")
 	public String gotoSwaggerUI() {
 		return "redirect:/swagger-ui/index.html";
 	}

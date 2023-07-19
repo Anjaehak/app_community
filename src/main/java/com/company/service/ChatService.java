@@ -34,8 +34,7 @@ public class ChatService {
 		return response;
 	}
 
-	public List<ChatWrapper> allChatRead(String principal, Integer page) throws NotExistUserException {
-		userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
+	public List<ChatWrapper> allChatRead(Integer page) {
 
 		if (page == null) {
 			page = 1;

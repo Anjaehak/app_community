@@ -14,7 +14,6 @@ public class CreatePostRequest {
 	private String postContent;
 	private LocalDateTime postDate;
 	private String title;
-	private String writer;
 	private List<MultipartFile> attaches;
 }
 

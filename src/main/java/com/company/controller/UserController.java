@@ -2,10 +2,8 @@ package com.company.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,21 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.company.exception.AlreadyCertifyException;
 import com.company.exception.CertifyFailException;
-import com.company.exception.ErrorPasswordException;
 import com.company.exception.ExistUserException;
-import com.company.exception.NotExistPostException;
-import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
+import com.company.exception.UnequalPasswordException;
 import com.company.model.dto.user.request.CertifyCodeRequest;
 import com.company.model.dto.user.request.CertifyEmailRequest;
-import com.company.model.dto.user.request.DeleteUserRequest;
 import com.company.model.dto.user.request.JoinUserRequest;
 import com.company.model.dto.user.request.ValidateUserRequest;
 import com.company.model.dto.user.response.CertifyResponse;
 import com.company.model.dto.user.response.ValidateUserResponse;
 import com.company.service.CertifyService;
 import com.company.service.JWTService;
-import com.company.service.SocialLoginService;
 import com.company.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -112,7 +106,7 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "password 불일치할경우", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	@PostMapping("/validate")
 	public ResponseEntity<ValidateUserResponse> validateHandle(@Valid ValidateUserRequest req)
-			throws NotExistUserException, ErrorPasswordException {
+			throws NotExistUserException, UnequalPasswordException {
 
 		userService.validateUser(req);
 
