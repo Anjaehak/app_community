@@ -83,12 +83,14 @@ public class UserService {
 		if (data.isPresent()) {
 			User saved = data.get();
 			saved.setSocialToken(accessToken);
+			saved.setAuthority("4");
 			userRepository.save(saved);
 		} else {
 			User user = new User();
 			user.setEmail(account.getEmail());
 			user.setNick(account.getNick());
 			user.setSocialToken(accessToken);
+			user.setAuthority("4");
 			userRepository.save(user);
 		}
 

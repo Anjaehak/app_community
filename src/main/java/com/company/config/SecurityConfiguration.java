@@ -20,12 +20,14 @@ public class SecurityConfiguration {
 
 		http.csrf(t -> t.disable());
 		http.sessionManagement(t -> t.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-		http.authorizeHttpRequests(t -> t.requestMatchers("/api/user/**").permitAll()
-				.requestMatchers("/api/user/delete-user/").authenticated().anyRequest().permitAll());
 		http.anonymous(t -> t.disable());
 		http.logout(t -> t.disable());
+
+		http.authorizeHttpRequests(t -> t.requestMatchers("/app_community/v1/user/**").permitAll()
+				.requestMatchers("/app_community/v1/oauth/**").permitAll().anyRequest().authenticated());
+
 		http.addFilterBefore(authenticationFilter, AuthorizationFilter.class);
-		http.cors(t -> t.disable());
+		http.cors();
 
 		return http.build();
 	}

@@ -53,8 +53,6 @@ public class UserController {
 
 	private final JWTService jwtService;
 
-	private final SocialLoginService socialLoginService;
-
 	// 유저 생성 컨트롤러
 	@PostMapping("/join")
 	@Operation(summary = "유저생성", description = "이메일인증을 받은 다음 유저생성")
@@ -94,11 +92,11 @@ public class UserController {
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
 
+	// 이메일 인증코드 유효성 검사
 	@Operation(summary = "이메일인증", description = "이메일과 인증코드를 받아서 유효한지확인")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
 			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
-
 	@PatchMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> verifyCodeHandle(@Valid CertifyCodeRequest req) throws CertifyFailException {
 
@@ -106,12 +104,12 @@ public class UserController {
 
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
-
+  
+  // 로그인
 	@Operation(summary = "로그인", description = "로그인 확인후 토큰발급")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "로그인인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
 			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
-
 	@PostMapping("/validate")
 	public ResponseEntity<ValidateUserResponse> validateHandle(@Valid ValidateUserRequest req)
 			throws NotExistUserException, ErrorPasswordException {
@@ -125,24 +123,6 @@ public class UserController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete")
-	public ResponseEntity<Void> deleteUserHandle(@AuthenticationPrincipal String principal, DeleteUserRequest req)
-			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
-		String[] data = principal.split("@");
-
-		if (data[1].endsWith("social")) {
-			if (data[1].startsWith("kakao")) {
-				socialLoginService.unlinkKakao(principal);
-			} else {
-				socialLoginService.unlinkNaver(principal);
-			}
-
-			userService.deleteSpecificSocialUser(principal);
-
-		} else {
-			userService.deleteSpecificUser(principal, req);
-		}
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
+	
 
 }
