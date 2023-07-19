@@ -2,6 +2,7 @@ package com.company.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -95,7 +96,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<Void> deleteUserHandle(String principal, DeleteUserRequest req)
+	public ResponseEntity<Void> deleteUserHandle(@AuthenticationPrincipal String principal, DeleteUserRequest req)
 			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
 		String[] data = principal.split("@");
 
