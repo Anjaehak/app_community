@@ -3,13 +3,14 @@ package com.company.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.company.exception.AlreadyCertifyException;
 import com.company.exception.CertifyFailException;
@@ -30,12 +31,19 @@ import com.company.service.JWTService;
 import com.company.service.SocialLoginService;
 import com.company.service.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-@Controller
+@RestController
 @RequestMapping("/app_community/v1/user")
 @RequiredArgsConstructor
+@Tag(name = "UserController", description = "인증관련 api")
 @CrossOrigin
 public class UserController {
 
@@ -49,16 +57,24 @@ public class UserController {
 
 	// 유저 생성 컨트롤러
 	@PostMapping("/join")
+	@Operation(summary = "유저생성", description = "이메일인증을 받은 다음 유저생성")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "유저 생성 성공", content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "400", description = "미인증or이미가입된유저", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<Void> createUserHandle(JoinUserRequest dto) throws ExistUserException, CertifyFailException {
 
 		userService.createUser(dto);
 
-		return new ResponseEntity<Void>(HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.CREATED);
 
 	}
 
 	// 이메일 중복체크 호출 컨트롤러
 	@GetMapping("/available")
+	@Operation(summary = "인증받은 이메일인지확인", description = "인증테이블에서 email을통해 인증상태확인")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "인증이메일 확인", content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "400", description = "미인증", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<Void> availableEmailHandle(CertifyEmailRequest dto) throws ExistUserException {
 
 		userService.availableEmail(dto);
@@ -67,12 +83,21 @@ public class UserController {
 	}
 
 	// 이메일에 인증코드 전송과 데이터 저장
+	@Operation(summary = "이메일에 인증코드 전송", description = "이메일에 인증코드 전송과 데이터 저장")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	@PostMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> certifyCodeHandle(CertifyEmailRequest dto) throws AlreadyCertifyException {
 		CertifyResponse response = mailService.sendCertifyCode(dto);
 
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
+
+	@Operation(summary = "이메일인증", description = "이메일과 인증코드를 받아서 유효한지확인")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 
 	@PatchMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> verifyCodeHandle(@Valid CertifyCodeRequest req) throws CertifyFailException {
@@ -81,6 +106,11 @@ public class UserController {
 
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
+
+	@Operation(summary = "로그인", description = "로그인 확인후 토큰발급")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "201", description = "로그인인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
+			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 
 	@PostMapping("/validate")
 	public ResponseEntity<ValidateUserResponse> validateHandle(@Valid ValidateUserRequest req)
