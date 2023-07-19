@@ -72,7 +72,7 @@ public class UserController {
 	@Operation(summary = "인증받은 이메일인지확인", description = "인증테이블에서 email을통해 인증상태확인")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "인증이메일 확인", content = @Content(schema = @Schema(implementation = Void.class))),
-			@ApiResponse(responseCode = "400", description = "미인증", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "400", description = "이메일미인증 상태", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	public ResponseEntity<Void> availableEmailHandle(CertifyEmailRequest dto) throws ExistUserException {
 
 		userService.availableEmail(dto);
@@ -83,8 +83,8 @@ public class UserController {
 	// 이메일에 인증코드 전송과 데이터 저장
 	@Operation(summary = "이메일에 인증코드 전송", description = "이메일에 인증코드 전송과 데이터 저장")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
-			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = CertifyResponse.class))),
+			@ApiResponse(responseCode = "400", description = "이미인증을받았을경우 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	@PostMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> certifyCodeHandle(CertifyEmailRequest dto) throws AlreadyCertifyException {
 		CertifyResponse response = mailService.sendCertifyCode(dto);
@@ -95,8 +95,8 @@ public class UserController {
 	// 이메일 인증코드 유효성 검사
 	@Operation(summary = "이메일인증", description = "이메일과 인증코드를 받아서 유효한지확인")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
-			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "200", description = "이메일인증 성공", content = @Content(schema = @Schema(implementation = CertifyResponse.class))),
+			@ApiResponse(responseCode = "400", description = "인증코드오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	@PatchMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> verifyCodeHandle(@Valid CertifyCodeRequest req) throws CertifyFailException {
 
@@ -104,12 +104,12 @@ public class UserController {
 
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
-  
-  // 로그인
+
+	// 로그인
 	@Operation(summary = "로그인", description = "로그인 확인후 토큰발급")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "201", description = "로그인인증 성공", content = @Content(schema = @Schema(implementation = Void.class))),
-			@ApiResponse(responseCode = "400", description = "인증오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
+			@ApiResponse(responseCode = "400", description = "password 불일치할경우", content = @Content(schema = @Schema(implementation = ErrorResponse.class))) })
 	@PostMapping("/validate")
 	public ResponseEntity<ValidateUserResponse> validateHandle(@Valid ValidateUserRequest req)
 			throws NotExistUserException, ErrorPasswordException {
@@ -122,7 +122,5 @@ public class UserController {
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-
-	
 
 }
