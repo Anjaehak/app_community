@@ -23,8 +23,8 @@ public class SecurityConfiguration {
 		http.anonymous(t -> t.disable());
 		http.logout(t -> t.disable());
 
-		http.authorizeHttpRequests(t -> t.requestMatchers("/app_community/v1/user/**").permitAll()
-				.requestMatchers("/app_community/v1/oauth/**").permitAll().anyRequest().authenticated());
+		http.authorizeHttpRequests(t -> t.requestMatchers("/app_community/v1/user/**","/index","/app_community/v1/oauth/**","/swagger-ui/**","/v3/api-docs/**").permitAll()
+				.anyRequest().authenticated());
 
 		http.addFilterBefore(authenticationFilter, AuthorizationFilter.class);
 		http.cors();
