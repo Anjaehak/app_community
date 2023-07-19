@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
+import com.company.exception.UnequalUserException;
 import com.company.model.dto.ImageWrapper;
 import com.company.model.dto.PostWrapper;
 import com.company.model.dto.ReReplyWrapper;
@@ -107,11 +108,15 @@ public class PostService {
 		}
 	}
 
-	public void update(String principal, UpdatePostRequest req) throws NotExistUserException, NotExistPostException {
-		userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
+	public void update(String principal, UpdatePostRequest req) throws NotExistUserException, NotExistPostException, UnequalUserException {
+		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 		Integer id = req.getId();
 
 		Post post = postRepository.findById(id).orElseThrow(() -> new NotExistPostException());
+
+		if (post.getPostWriter().getEmail().equals(user.getEmail())) {
+			throw new UnequalUserException();
+		}
 
 		Post saved = new Post(post, req);
 

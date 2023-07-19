@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 
-	@RequestMapping("/")
+	@RequestMapping("/app_community/v1/index")
 	public String gotoSwaggerUI() {
 		return "redirect:/swagger-ui/index.html";
 	}

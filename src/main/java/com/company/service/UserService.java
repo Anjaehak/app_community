@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.company.exception.CertifyFailException;
-import com.company.exception.ErrorPasswordException;
+import com.company.exception.UnequalPasswordException;
 import com.company.exception.ExistUserException;
 import com.company.exception.NotExistPostException;
 import com.company.exception.NotExistReplyException;
@@ -68,11 +68,11 @@ public class UserService {
 
 	}
 
-	public void validateUser(@Valid ValidateUserRequest req) throws ErrorPasswordException, NotExistUserException {
+	public void validateUser(@Valid ValidateUserRequest req) throws UnequalPasswordException, NotExistUserException {
 		User user = userRepository.findByEmail(req.getEmail()).orElseThrow(() -> new NotExistUserException());
 
 		if (!user.getPassword().equals(req.getPass())) {
-			throw new ErrorPasswordException("비밀번호가 올바르지않습니다");
+			throw new UnequalPasswordException("비밀번호가 올바르지않습니다");
 		}
 
 	}
@@ -98,10 +98,10 @@ public class UserService {
 
 	@Transactional
 	public void deleteSpecificUser(String principal, DeleteUserRequest req)
-			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
+			throws NotExistUserException, UnequalPasswordException, NotExistPostException, NotExistReplyException {
 		User user = userRepository.findByEmail(principal).orElseThrow(() -> new NotExistUserException());
 		if (!user.getPassword().equals(req.getPassword())) {
-			throw new ErrorPasswordException();
+			throw new UnequalPasswordException();
 		}
 		List<Post> postDatas = user.getPosts();
 		for (Post post : postDatas) {
