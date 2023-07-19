@@ -14,22 +14,18 @@ public class JWTService {
 
 	@Value("${jwt.secret.key}")
 	String key;
-	
+
 	public String createToken(String email) {
 		Algorithm algorithm = Algorithm.HMAC256(key);
-		
-		return JWT.create()
-			.withIssuer("app_comunity")
-			.withIssuedAt(new Date(System.currentTimeMillis()))
-			.withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 10))
-			.withClaim("email", email)
-			.sign(algorithm);
+
+		return JWT.create().withIssuer("app_community").withIssuedAt(new Date(System.currentTimeMillis()))
+				.withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 10)).withClaim("email", email)
+				.sign(algorithm);
 	}
-	
 
 	public String certifyToken(String token) {
 		Algorithm algorithm = Algorithm.HMAC256(key);
-		var verifier =JWT.require(algorithm).build();
+		var verifier = JWT.require(algorithm).build();
 		DecodedJWT decodedJWT = verifier.verify(token);
 
 		return decodedJWT.getClaim("email").asString();
