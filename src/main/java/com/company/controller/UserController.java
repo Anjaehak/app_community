@@ -45,8 +45,6 @@ public class UserController {
 
 	private final JWTService jwtService;
 
-	private final SocialLoginService socialLoginService;
-
 	// 유저 생성 컨트롤러
 	@PostMapping("/join")
 	public ResponseEntity<Void> createUserHandle(JoinUserRequest dto) throws ExistUserException, CertifyFailException {
@@ -74,6 +72,7 @@ public class UserController {
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
 
+	// 이메일 인증코드 유효성 검사
 	@PatchMapping("/certify-email")
 	public ResponseEntity<CertifyResponse> verifyCodeHandle(@Valid CertifyCodeRequest req) throws CertifyFailException {
 
@@ -82,6 +81,7 @@ public class UserController {
 		return new ResponseEntity<CertifyResponse>(response, HttpStatus.OK);
 	}
 
+	// 로그인
 	@PostMapping("/validate")
 	public ResponseEntity<ValidateUserResponse> validateHandle(@Valid ValidateUserRequest req)
 			throws NotExistUserException, ErrorPasswordException {
@@ -95,24 +95,6 @@ public class UserController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete")
-	public ResponseEntity<Void> deleteUserHandle(@AuthenticationPrincipal String principal, DeleteUserRequest req)
-			throws NotExistUserException, ErrorPasswordException, NotExistPostException, NotExistReplyException {
-		String[] data = principal.split("@");
-
-		if (data[1].endsWith("social")) {
-			if (data[1].startsWith("kakao")) {
-				socialLoginService.unlinkKakao(principal);
-			} else {
-				socialLoginService.unlinkNaver(principal);
-			}
-
-			userService.deleteSpecificSocialUser(principal);
-
-		} else {
-			userService.deleteSpecificUser(principal, req);
-		}
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
+	
 
 }

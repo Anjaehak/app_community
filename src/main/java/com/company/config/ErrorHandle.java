@@ -20,48 +20,48 @@ public class ErrorHandle {
 	@ExceptionHandler(AlreadyCertifyException.class)
 	public ResponseEntity<String> exceptionHandle(AlreadyCertifyException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(CertifyFailException.class)
 	public ResponseEntity<String> exceptionHandle(CertifyFailException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ErrorPasswordException.class)
 	public ResponseEntity<String> exceptionHandle(ErrorPasswordException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(ExistUserException.class)
 	public ResponseEntity<String> exceptionHandle(ExistUserException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(NoRecommedException.class)
 	public ResponseEntity<String> exceptionHandle(NoRecommedException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(NotExistPostException.class)
 	public ResponseEntity<String> exceptionHandle(NotExistPostException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(NotExistReplyException.class)
 	public ResponseEntity<String> exceptionHandle(NotExistReplyException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 
 	@ExceptionHandler(NotExistUserException.class)
 	public ResponseEntity<String> exceptionHandle(NotExistUserException ex) {
 		String message = ex.getMessage();
-		return new ResponseEntity<String>(message, HttpStatus.OK);
+		return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 	}
 }

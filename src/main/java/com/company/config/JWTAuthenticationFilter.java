@@ -7,6 +7,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -17,9 +18,11 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 	private final JWTService jwtService;
@@ -30,17 +33,23 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
 		String authorization = request.getHeader("Authorization");
 
+		log.info("Authorization header value : {}", authorization);
+
 		if (authorization == null) {
 			filterChain.doFilter(request, response);
 			return;
 
 		}
 		try {
-			// JWT 유효성검사 해서 통과하면
 			String email = jwtService.certifyToken(authorization);
 
+			log.info("email : {}", email);
+
 			Authentication authentication = new UsernamePasswordAuthenticationToken(email, authorization,
-					List.of(new SimpleGrantedAuthority("ROLE_MEMBER")));
+					List.of(new SimpleGrantedAuthority("4")));
+
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+
 		} catch (Exception e) {
 			throw new BadCredentialsException("Invalid authentication token");
 		}

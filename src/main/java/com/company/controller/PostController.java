@@ -5,7 +5,6 @@ import java.io.IOException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.company.exception.NotExistPostException;
-import com.company.exception.NotExistReplyException;
 import com.company.exception.NotExistUserException;
 import com.company.model.dto.PostWrapper;
 import com.company.model.dto.post.request.CreatePostRequest;
-import com.company.model.dto.post.request.PostDeleteRequest;
 import com.company.model.dto.post.request.ReadPostRequest;
 import com.company.model.dto.post.request.UpdatePostRequest;
 import com.company.model.dto.post.response.AllPostsResponse;
@@ -71,14 +68,4 @@ public class PostController {
 		return new ResponseEntity<PostWrapper>(postResponse, HttpStatus.OK);
 
 	}
-
-	@DeleteMapping("/delete")
-	public ResponseEntity<Void> specificDeletePostHandle(String principal, PostDeleteRequest req)
-			throws NotExistPostException, NotExistReplyException {
-
-		postService.deleteSpecificPost(principal, req);
-
-		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
-
 }
